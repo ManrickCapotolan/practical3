@@ -5,7 +5,7 @@ export default function UserItem({ user }) {
   const { id, name } = user;
 
   return (
-    <div>
+    <div data-testid='user-item'>
       <Link to={`/users/${id}`}>
         <h1>{name}</h1>
         <img 
