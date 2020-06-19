@@ -1,38 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { Field, reduxForm } from 'redux-form';
 import { createUserPost } from '../actions/userActions';
+import { reduxForm } from 'redux-form';
 
-function CreatePost({ handleSubmit, createUserPost }) {
+export function CreatePost({ createUserPost }) {
   const history = useHistory();
   const match = useRouteMatch();
+  const [subject, setSubject] = useState('');
+  const [body, setBody] = useState('');
 
-  const renderInput = ({ input, label, type }) => {
-    return (
-      <div>
-        <label>{label}</label>
-        {type === 'textarea'
-          ? <textarea {...input} />
-          : <input {...input} />
-        }
-      </div>
-    )
-  };
+  const onChange = (fn) => (e) => {
+    fn(e.target.value);
+  } 
 
-  const onSubmit = (formValues) => {
-    const newPost = { ...formValues, userId: match.params.id }
+  const onSubmit = () => {
+    const newPost = { subject, body, userId: match.params.id }
     createUserPost(newPost);
     history.push(`/users/${match.params.id}`);
   }
   
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <div>
       <h3>Create Post</h3>
-      <Field name='subject' component={renderInput} label='Subject' />
-      <Field name='body' component={renderInput} type='textarea' label='Body' />
-      <button>Submit</button>
-    </form>
+      <label htmlFor='subject'>Subject</label>
+      <input type='text' name='subject' placeholder='Enter Subject' value={subject} onChange={onChange(setSubject)}/>
+      <label htmlFor='body'>Body</label>
+        <input type='text' name='body' placeholder='Enter Body' value={body} onChange={onChange(setBody)}/>
+      <button onClick={onSubmit}>Submit</button>
+    </div>
   )
 }
 
